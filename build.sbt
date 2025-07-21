@@ -1,11 +1,10 @@
-import Dependencies.munit
-import xerial.sbt.Sonatype._
+import xerial.sbt.Sonatype.*
 
-lazy val scala212 = "2.12.20"
-lazy val scala213 = "2.13.11"
-lazy val supportedScalaVersions = List(scala212, scala213)
+lazy val scala213 = "2.13.16"
+lazy val scala3 = "3.3.6"
+lazy val supportedScalaVersions = List(scala213, scala3)
 
-ThisBuild / scalaVersion     := scala212
+ThisBuild / scalaVersion     := scala213
 ThisBuild / organization     := "fr.maif"
 
 inThisBuild(
@@ -35,10 +34,10 @@ inThisBuild(
 )
 
 
-lazy val playJsonVersion = "2.9.3"
-lazy val playWsVersion = "2.8.19"
-lazy val akkaVersion = "2.6.20"
-lazy val akkaHttpVersion = "10.2.10"
+lazy val playJsonVersion = "3.0.5"
+lazy val playWsVersion = "3.0.6"
+lazy val pekkoVersion = "1.1.3"
+lazy val pekkoHttpVersion = "1.1.0"
 lazy val metricsVersion = "4.2.12"
 lazy val excludesJackson = Seq(
   ExclusionRule(organization = "com.fasterxml.jackson.core"),
@@ -46,13 +45,33 @@ lazy val excludesJackson = Seq(
   ExclusionRule(organization = "com.fasterxml.jackson.dataformat")
 )
 
-scalacOptions ++= Seq(
-  "-feature",
-  "-language:higherKinds",
-  "-language:implicitConversions",
-  "-language:existentials",
-  "-language:postfixOps"
-)
+scalacOptions ++= {
+  CrossVersion.partialVersion(scalaVersion.value) match {
+    case Some((2, 13)) => Seq(
+      "-feature",
+      "-language:higherKinds",
+      "-language:implicitConversions",
+      "-language:existentials",
+      "-language:postfixOps",
+      "-Xsource:3"
+    )
+    case Some((3, _)) => Seq(
+      "-feature",
+      "-language:higherKinds",
+      "-language:implicitConversions",
+      "-language:existentials",
+      "-language:postfixOps",
+      "-source:3.3-migration"
+    )
+    case _ => Seq(
+      "-feature",
+      "-language:higherKinds",
+      "-language:implicitConversions",
+      "-language:existentials",
+      "-language:postfixOps"
+    )
+  }
+}
 
 lazy val root = (project in file("."))
   .settings(
@@ -62,18 +81,22 @@ lazy val root = (project in file("."))
     //githubRepository := "wasm4s",
     //githubTokenSource := TokenSource.Environment("GITHUB_TOKEN"),
     libraryDependencies ++= Seq(
-      munit % Test,
-      "com.typesafe.play"     %% "play-ws"        % playWsVersion % "provided",
-      "com.typesafe.play"     %% "play-json"      % playJsonVersion % "provided",
-      "com.typesafe.akka"     %% "akka-stream"    % akkaVersion % "provided",
-      "com.typesafe.akka"     %% "akka-http"      % akkaHttpVersion % "provided",
-      "com.typesafe.play"     %% "play-json-joda" % playJsonVersion % "provided",
+      "org.playframework"     %% "play-ws"        % playWsVersion % "provided",
+      "org.playframework"     %% "play-json"      % playJsonVersion % "provided",
+      "org.apache.pekko"      %% "pekko-stream"   % pekkoVersion % "provided",
+      "org.apache.pekko"      %% "pekko-http"     % pekkoHttpVersion % "provided",
+      "org.apache.pekko"      %% "pekko-actor"    % pekkoVersion % "provided",
+      "org.apache.pekko"      %% "pekko-actor-typed" % pekkoVersion % "provided",
+      "org.apache.pekko"      %% "pekko-serialization-jackson" % pekkoVersion % "provided",
+      "org.apache.pekko"      %% "pekko-slf4j"    % pekkoVersion % "provided",
+      "org.playframework"     %% "play-json-joda" % playJsonVersion % "provided",
       "org.lz4"               % "lz4-java"        % "1.8.0" % "provided",
       "com.auth0"             % "java-jwt"        % "4.2.0" % "provided" excludeAll (excludesJackson: _*),
       "commons-codec"         % "commons-codec"   % "1.16.0" % "provided",
       "net.java.dev.jna"      % "jna"             % "5.13.0" % "provided",
       "com.google.code.gson"  % "gson"            % "2.10" % "provided",
       "io.dropwizard.metrics" % "metrics-json"    % metricsVersion % "provided" excludeAll (excludesJackson: _*), // Apache 2.0
+      "org.scalameta"        %% "munit"           % "0.7.29" % Test,
     ),
   )
 

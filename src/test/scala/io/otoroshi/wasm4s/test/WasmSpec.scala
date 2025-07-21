@@ -16,7 +16,7 @@ class WasmSpec extends munit.FunSuite {
     "coraza" -> BasicWasmConfiguration.fromOpaSource(WasmSource(WasmSourceKind.File, "./src/test/resources/coraza.wasm")),
   )
 
-  implicit val intctx = BasicWasmIntegrationContextWithNoHttpClient("test-wasm4s", wasmStore)
+  implicit val intctx: BasicWasmIntegrationContextWithNoHttpClient[BasicWasmConfiguration] = BasicWasmIntegrationContextWithNoHttpClient("test-wasm4s", wasmStore)
   val wasmIntegration = WasmIntegration(intctx)
 
   wasmIntegration.runVmLoaderJob()

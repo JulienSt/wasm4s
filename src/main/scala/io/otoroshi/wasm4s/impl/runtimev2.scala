@@ -1,8 +1,8 @@
 package io.otoroshi.wasm4s.impl
 
-import akka.stream.OverflowStrategy
-import akka.stream.scaladsl._
-import akka.util.ByteString
+import org.apache.pekko.stream.OverflowStrategy
+import org.apache.pekko.stream.scaladsl._
+import org.apache.pekko.util.ByteString
 import com.codahale.metrics.UniformReservoir
 import io.otoroshi.wasm4s.scaladsl._
 import io.otoroshi.wasm4s.scaladsl.opa._
@@ -261,7 +261,7 @@ case class WasmVmImpl(
       ) flatMap {
         case Left(error) => Future.failed(new RuntimeException(s"coraza next initialize error: ${error.stringify}"))
         case Right(value) =>
-          initialize()
+          initialize(())
           this.vfuture
       }
     } else {

@@ -25,7 +25,7 @@ object WasmoSettings {
         "clientId"      -> o.clientId,
         "clientSecret"  -> o.clientSecret,
         "legacyAuth"  -> o.legacyAuth,
-        "pluginsFilter" -> o.pluginsFilter.map(JsString).getOrElse(JsNull).as[JsValue],
+        "pluginsFilter" -> o.pluginsFilter.map(JsString.apply).getOrElse(JsNull).as[JsValue],
         "tlsConfig" -> o.tlsConfig.map(_.json).getOrElse(JsNull).as[JsValue],
       )
 

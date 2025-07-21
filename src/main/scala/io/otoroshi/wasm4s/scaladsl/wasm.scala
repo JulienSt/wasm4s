@@ -1,8 +1,8 @@
 package io.otoroshi.wasm4s.scaladsl
 
-import akka.http.scaladsl.util.FastFuture
-import akka.stream.scaladsl.StreamConverters
-import akka.util.ByteString
+import org.apache.pekko.http.scaladsl.util.FastFuture
+import org.apache.pekko.stream.scaladsl.StreamConverters
+import org.apache.pekko.util.ByteString
 import io.otoroshi.wasm4s.impl.OPAWasmVm
 import io.otoroshi.wasm4s.scaladsl.implicits._
 import io.otoroshi.wasm4s.scaladsl.security._
@@ -126,13 +126,13 @@ case class WasmDataRights(read: Boolean = false, write: Boolean = false)
 object WasmDataRights {
   def fmt =
     new Format[WasmDataRights] {
-      override def writes(o: WasmDataRights) =
+      override def writes(o: WasmDataRights): JsValue =
         Json.obj(
           "read"  -> o.read,
           "write" -> o.write
         )
 
-      override def reads(json: JsValue) =
+      override def reads(json: JsValue): JsResult[WasmDataRights] =
         Try {
           JsSuccess(
             WasmDataRights(

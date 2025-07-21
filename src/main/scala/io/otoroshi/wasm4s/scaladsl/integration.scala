@@ -1,7 +1,7 @@
 package io.otoroshi.wasm4s.scaladsl
 
-import akka.actor.ActorSystem
-import akka.stream.Materializer
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.Materializer
 import io.otoroshi.wasm4s.scaladsl.implicits._
 import io.otoroshi.wasm4s.scaladsl.security.TlsConfig
 import org.extism.sdk.{HostFunction, HostUserData}

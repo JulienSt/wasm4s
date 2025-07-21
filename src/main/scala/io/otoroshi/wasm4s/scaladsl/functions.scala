@@ -1,7 +1,7 @@
 package io.otoroshi.wasm4s.scaladsl
 
-import akka.stream.Materializer
-import akka.util.ByteString
+import org.apache.pekko.stream.Materializer
+import org.apache.pekko.util.ByteString
 import io.otoroshi.wasm4s.impl._
 import io.otoroshi.wasm4s.scaladsl.implicits._
 import org.extism.sdk.{HostFunction, HostUserData, Plugin}
